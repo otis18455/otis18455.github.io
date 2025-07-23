@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📁 File Uploader</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 40px;
+      background: #f3f4f6;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      padding: 10px;
+      font-size: 1em;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 1.1em;
+    }
+    a.download-link {
+      color: #1d4ed8;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📁 Upload a File & Get a Download Link</h1>
+  <input type="file" id="fileInput"><br>
+  <button onclick="uploadFile()">Upload File</button>
+
+  <div id="result"></div>
+
+  <script>
+    function uploadFile() {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please choose a file first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      document.getElementById("result").innerText = "Uploading...";
+
+      fetch("https://file.io", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("result").innerHTML =
+            `✅ File uploaded!<br><a class="download-link" href="${data.link}" target="_blank">${data.link}</a>`;
+        } else {
+          document.getElementById("result").innerText = "Upload failed: " + data.message;
+        }
+      })
+      .catch(error => {
+        document.getElementById("result").innerText = "Error uploading file.";
+        console.error(error);
+      });
+    }
+  </script>
+
+</body>
+</html>
