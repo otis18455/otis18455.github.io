@@ -1,97 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
-  <title>📁 Folder Uploader with ZIP</title>
+  <title>📁 Zip & Upload Folder</title>
   <style>
+    /* Reset & basics */
+    * {
+      box-sizing: border-box;
+    }
     body {
+      margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #e0e7ff;
+      background: #f0f4ff;
       color: #1e293b;
-      text-align: center;
-      padding: 50px 20px;
+      display: flex;
       min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #3730a3;
+      user-select: none;
+    }
+    nav button {
+      background: transparent;
+      border: none;
+      font-weight: 600;
+      color: #4f46e5;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+    nav button:hover, nav button.active {
+      background-color: #c7d2fe;
+    }
+
+    main {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgb(79 70 229 / 0.1);
+      width: 100%;
+      max-width: 600px;
+      min-height: 320px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+    }
+
+    /* Home page styles */
+    #home {
+      display: flex;
+      flex-direction: column;
       gap: 20px;
+      text-align: center;
+      color: #334155;
     }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0;
+    #home h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 5px;
     }
-    p.subtitle {
+    #home p {
       font-size: 1.1rem;
-      color: #475569;
-      margin-top: 0;
-      margin-bottom: 30px;
+      line-height: 1.4;
+      user-select: none;
     }
-    input[type="file"] {
-      padding: 10px;
+
+    /* Upload page */
+    #upload {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+    #upload input[type="file"] {
+      width: 100%;
+      padding: 12px;
       border-radius: 8px;
-      border: 1px solid #94a3b8;
+      border: 1px solid #cbd5e1;
       cursor: pointer;
       font-size: 1rem;
     }
-    button {
-      margin-top: 20px;
-      padding: 14px 36px;
-      font-size: 1.2rem;
+    #upload button {
+      padding: 12px 36px;
       background: #4f46e5;
       color: white;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
+      font-size: 1.1rem;
       cursor: pointer;
-      transition: background 0.3s ease;
       user-select: none;
+      transition: background-color 0.3s ease;
     }
-    button:hover:not(:disabled) {
+    #upload button:hover:not(:disabled) {
       background: #4338ca;
     }
-    button:disabled {
+    #upload button:disabled {
       background: #a5b4fc;
       cursor: not-allowed;
     }
+
     #result {
-      margin-top: 30px;
-      font-size: 1.2rem;
-      word-break: break-all;
-      max-width: 600px;
+      font-size: 1rem;
+      color: #334155;
+      word-break: break-word;
+      max-width: 100%;
       text-align: center;
     }
-    a.download-link {
+    #result a.download-link {
       color: #3730a3;
       font-weight: 600;
       text-decoration: none;
       border-bottom: 2px solid transparent;
       transition: border-bottom 0.3s ease;
     }
-    a.download-link:hover {
+    #result a.download-link:hover {
       border-bottom: 2px solid #4338ca;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      main {
+        padding: 20px;
+        min-height: 300px;
+      }
+      header h1 {
+        font-size: 1.3rem;
+      }
+      nav button {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>📁 Upload a Folder & Get a ZIP Download Link</h1>
-  <p class="subtitle">Select a folder to zip and upload it easily</p>
-  
-  <input type="file" id="fileInput" webkitdirectory directory multiple />
-  <button id="uploadBtn" disabled>Upload Folder</button>
-  
-  <div id="result"></div>
+  <header>
+    <h1>📁 Folder Uploader</h1>
+    <nav>
+      <button id="navHome" class="active">Home</button>
+      <button id="navUpload">Upload</button>
+    </nav>
+  </header>
 
-  <!-- JSZip library CDN -->
+  <main>
+    <!-- Home page -->
+    <section id="home">
+      <h2>Welcome!</h2>
+      <p>Select the “Upload” tab to zip and upload your folder easily.</p>
+      <p>This app zips your folder in the browser and uploads it as a single ZIP file.</p>
+      <p>Works best in Chrome-based browsers.</p>
+    </section>
+
+    <!-- Upload page -->
+    <section id="upload" aria-label="Upload Folder Section">
+      <input type="file" id="fileInput" webkitdirectory directory multiple aria-label="Select folder" />
+      <button id="uploadBtn" disabled>Upload Folder</button>
+      <div id="result"></div>
+    </section>
+  </main>
+
+  <!-- JSZip library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  
+
   <script>
+    // Navigation logic
+    const navHome = document.getElementById('navHome');
+    const navUpload = document.getElementById('navUpload');
+    const homeSection = document.getElementById('home');
+    const uploadSection = document.getElementById('upload');
+
+    navHome.addEventListener('click', () => {
+      homeSection.style.display = 'flex';
+      uploadSection.style.display = 'none';
+      navHome.classList.add('active');
+      navUpload.classList.remove('active');
+      clearResult();
+    });
+
+    navUpload.addEventListener('click', () => {
+      homeSection.style.display = 'none';
+      uploadSection.style.display = 'flex';
+      navUpload.classList.add('active');
+      navHome.classList.remove('active');
+    });
+
+    // Upload logic
     const fileInput = document.getElementById('fileInput');
     const uploadBtn = document.getElementById('uploadBtn');
     const resultDiv = document.getElementById('result');
 
     fileInput.addEventListener('change', () => {
       uploadBtn.disabled = fileInput.files.length === 0;
-      resultDiv.innerHTML = '';
+      clearResult();
     });
 
     uploadBtn.addEventListener('click', async () => {
@@ -101,49 +218,50 @@
       }
 
       uploadBtn.disabled = true;
-      resultDiv.textContent = '📦 Creating ZIP file... Please wait.';
+      setResult('📦 Creating ZIP file... Please wait.');
 
       const zip = new JSZip();
 
-      // Add each file preserving folder structure
       for (const file of fileInput.files) {
-        // file.webkitRelativePath includes folder path inside the selected folder
         zip.file(file.webkitRelativePath, file);
       }
 
       try {
-        // Generate zip as blob
         const zipBlob = await zip.generateAsync({ type: 'blob' });
-        resultDiv.textContent = '🚀 Uploading ZIP file...';
+        setResult('🚀 Uploading ZIP file...');
 
-        // Prepare form data for upload
         const formData = new FormData();
         formData.append('file', zipBlob, 'folder.zip');
 
-        // Upload to file.io
         const response = await fetch('https://file.io', {
           method: 'POST',
-          body: formData
+          body: formData,
         });
+
         const data = await response.json();
 
         if (data.success) {
-          resultDiv.innerHTML = `
-            ✅ Upload successful!<br>
-            <a class="download-link" href="${data.link}" target="_blank" rel="noopener noreferrer">
-              Download your ZIP here
-            </a>
-          `;
+          setResult(
+            `✅ Upload successful!<br>
+            <a class="download-link" href="${data.link}" target="_blank" rel="noopener noreferrer">Download your ZIP here</a>`
+          );
         } else {
-          resultDiv.textContent = '❌ Upload failed: ' + (data.message || 'Unknown error');
+          setResult('❌ Upload failed: ' + (data.message || 'Unknown error'));
         }
       } catch (error) {
         console.error(error);
-        resultDiv.textContent = '❌ An error occurred during zip or upload.';
+        setResult('❌ An error occurred during zip or upload.');
       } finally {
         uploadBtn.disabled = false;
       }
     });
+
+    function setResult(html) {
+      resultDiv.innerHTML = html;
+    }
+    function clearResult() {
+      resultDiv.innerHTML = '';
+    }
   </script>
 </body>
 </html>
